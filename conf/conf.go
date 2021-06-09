@@ -7,6 +7,7 @@ var Conf *Config
 type Config struct {
 	BaseConf
 	LogConf
+	JwtConf
 }
 
 // BaseConf inlclude deatils server components
@@ -21,9 +22,9 @@ type LogConf struct {
 	LogLevel string `ini:"LogLevel"`
 }
 
-type JWTConf struct {
-	JWTSecret        string `ini:"JWTSecret"`
-	JWTExpiredMinute int    `ini:"JWTExpiredMinute"`
+type JwtConf struct {
+	JwtSecret        string `ini:"JwtSecret"`
+	JwtExpiredMinute int    `ini:"JwtExpiredMinute"`
 }
 
 func InitConfig(confPath *string) (*Config, error) {

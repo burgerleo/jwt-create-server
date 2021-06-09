@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	model "jwt-generate-server/models"
 	"jwt-generate-server/service/token"
 	"net/http"
 
@@ -14,12 +14,13 @@ type ApiOutput struct {
 	Data    interface{} `json:"data"`
 }
 
+var apiSuccess = ApiOutput{
+	Message: "Success",
+	Status:  200,
+}
+
 func Home(ctx *gin.Context) {
-	ctx.JSON(200, ApiOutput{
-		Message: "Success",
-		Status:  200,
-		Data:    "",
-	})
+	ctx.JSON(200, apiSuccess)
 }
 
 func HellowLeo(ctx *gin.Context) {
@@ -56,17 +57,25 @@ func GetJsonData(ctx *gin.Context) {
 }
 
 func JwtGenerate(ctx *gin.Context) {
-	json := make(map[string]interface{})
+	var user model.User
+	// 出現這個錯誤
+	// [GIN-debug] [WARNING] Headers were already written. Wanted to override status code 400 with 200
+	// https://studygolang.com/articles/17745
+	// ctx.BindJSON(&user)
+	ctx.ShouldBind(&user)
 
-	ctx.BindJSON(&json)
+	var jwt = token.JWTToken
+	err := jwt.GenerateToken(user)
 
-	var jwt = token.Jwt{}
-	err := jwt.GenerateToken(1)
 	if err != nil {
-		fmt.Println("err")
+		ctx.JSON(http.StatusBadRequest,
+			ApiOutput{
+				Message: "Fail",
+				Status:  http.StatusBadRequest,
+				Data:    "Jwt generate error",
+			})
+		return
 	}
-
-	// print(jwt.RetrieveToken())
 
 	ctx.JSON(http.StatusOK,
 		ApiOutput{
@@ -74,4 +83,8 @@ func JwtGenerate(ctx *gin.Context) {
 			Status:  http.StatusOK,
 			Data:    jwt,
 		})
+}
+
+func JwtVerify(ctx *gin.Context) {
+	ctx.JSON(200, apiSuccess)
 }

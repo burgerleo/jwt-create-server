@@ -1,11 +1,20 @@
 package token
 
+import (
+	model "jwt-generate-server/models"
+
+	"github.com/dgrijalva/jwt-go"
+)
+
+var JWTToken JwtToken
+
 type Token interface {
-	GenerateToken(Login) error
+	GenerateToken(model.User) error
 	RetrieveToken() string
+	VerifyToken(string) (*jwt.Token, error)
 }
 
-type Login struct {
-	UserId int    `json:"user_id"`
-	Name   string `json:"name"`
+func InitToken(secret string, expireTime int) error {
+	JWTToken.Init(secret, expireTime)
+	return nil
 }

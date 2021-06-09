@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"jwt-generate-server/conf"
 	"jwt-generate-server/router"
+	"jwt-generate-server/service/token"
 	"log"
 	"net/http"
 	"os"
@@ -28,7 +29,12 @@ func Init() error {
 	if err != nil {
 		return fmt.Errorf("Init config err: %v", err)
 	}
+	// confInfo.
 
+	err = token.InitToken(confInfo.JwtConf.JwtSecret, confInfo.JwtConf.JwtExpiredMinute)
+	if err != nil {
+		return fmt.Errorf("Init JWT err: %v", err)
+	}
 	return nil
 }
 
@@ -45,10 +51,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	route := gin.Default()
-	// 讓路徑大小寫通吃
-	route.RedirectFixedPath = true
-	router.ApiRouter(route)
+	route := setupRouter()
 
 	httpSrv := &http.Server{
 		Addr:    fmt.Sprintf(":%v", confInfo.BaseConf.HttpPort),
@@ -63,6 +66,15 @@ func main() {
 	}()
 
 	gracefulShutdown()
+}
+
+func setupRouter() *gin.Engine {
+	route := gin.Default()
+	// 讓路徑大小寫通吃
+	route.RedirectFixedPath = true
+	router.ApiRouter(route)
+
+	return route
 }
 
 // gracefulShutdown: handle the worker connection

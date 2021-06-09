@@ -23,9 +23,13 @@ func ApiRouter(r *gin.Engine) {
 		apiRoot.POST("json", service.GetJsonData)
 	}
 
-	leoRouter := authrized.Group("/jwt")
+	tokenRouter := authrized.Group("/jwt")
 	{
-		leoRouter.GET("", service.JwtGenerate)
-		leoRouter.POST("", service.JwtGenerate)
+		tokenRouter.POST("", service.JwtGenerate)
+		verifyRouter := tokenRouter.Group("/verify")
+		{
+			verifyRouter.Use(validateJwt())
+			verifyRouter.GET("", service.JwtVerify)
+		}
 	}
 }

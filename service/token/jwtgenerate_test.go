@@ -2,11 +2,19 @@ package token
 
 import (
 	"fmt"
+	model "jwt-generate-server/models"
 	"net/http"
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/dgrijalva/jwt-go"
+)
+
+var (
+	jwtToken = JwtToken{secret: "abcd", expireTime: 10}
+	user     = model.User{UserId: 1, Name: "leo"}
 )
 
 func ExtractToken(r *http.Request) string {
@@ -19,32 +27,26 @@ func ExtractToken(r *http.Request) string {
 	return ""
 }
 
-func VerifyToken(r *http.Request) (*jwt.Token, error) {
-	var ACCESS_SECRET = "jdnfksdmfksd"
-
-	tokenString := ExtractToken(r)
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		//Make sure that the token method conform to "SigningMethodHMAC"
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(ACCESS_SECRET), nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return token, nil
-}
-
-func TestCreatetoken(t *testing.T) {
-
-	var jwt = Jwt{}
-	err := jwt.GenerateToken(1)
+func TestGenerateToken(t *testing.T) {
+	err := jwtToken.GenerateToken(user)
 	if err != nil {
 		fmt.Println("err")
 	}
+	fmt.Println("----- JWT Token -----")
+	fmt.Println(jwtToken.RetrieveToken())
+	assert.NoError(t, err)
+}
 
-	print(jwt.RetrieveToken())
+func TestVerifyToken(t *testing.T) {
+	TestGenerateToken(t)
 
-	// assert.Equal(t, "cde",)
+	token, err := jwtToken.VerifyToken(jwtToken.RetrieveToken())
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	claims, _ := token.Claims.(jwt.MapClaims)
+
+	assert.Equal(t, claims["user_id"], float64(1))
+	assert.True(t, token.Valid)
 }
