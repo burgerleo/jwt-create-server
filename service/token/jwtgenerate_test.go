@@ -2,7 +2,7 @@ package token
 
 import (
 	"fmt"
-	model "jwt-generate-server/models"
+	"jwt-generate-server/models"
 	"net/http"
 	"strings"
 	"testing"
@@ -14,7 +14,7 @@ import (
 
 var (
 	jwtToken = JwtToken{secret: "abcd", expireTime: 10}
-	user     = model.User{UserId: 1, Name: "leo"}
+	user     = models.User{UserId: 1, Name: "leo"}
 )
 
 func ExtractToken(r *http.Request) string {
@@ -47,6 +47,9 @@ func TestVerifyToken(t *testing.T) {
 
 	claims, _ := token.Claims.(jwt.MapClaims)
 
-	assert.Equal(t, claims["user_id"], float64(1))
+	fmt.Println(claims["user"])
+	leo := claims["user"]
+
+	assert.Equal(t, leo.(map[string]interface{})["name"], "leo")
 	assert.True(t, token.Valid)
 }

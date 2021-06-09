@@ -1,7 +1,7 @@
 package token
 
 import (
-	model "jwt-generate-server/models"
+	"jwt-generate-server/models"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -9,7 +9,7 @@ import (
 var JWTToken JwtToken
 
 type Token interface {
-	GenerateToken(model.User) error
+	GenerateToken(models.User) error
 	RetrieveToken() string
 	VerifyToken(string) (*jwt.Token, error)
 }

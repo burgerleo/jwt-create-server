@@ -1,7 +1,8 @@
 package service
 
 import (
-	model "jwt-generate-server/models"
+	"fmt"
+	"jwt-generate-server/models"
 	"jwt-generate-server/service/token"
 	"net/http"
 
@@ -57,12 +58,15 @@ func GetJsonData(ctx *gin.Context) {
 }
 
 func JwtGenerate(ctx *gin.Context) {
-	var user model.User
+	fmt.Println(";;;;;;;;;;;;;;")
+	var user models.User
 	// 出現這個錯誤
 	// [GIN-debug] [WARNING] Headers were already written. Wanted to override status code 400 with 200
 	// https://studygolang.com/articles/17745
 	// ctx.BindJSON(&user)
 	ctx.ShouldBind(&user)
+
+	fmt.Println(user)
 
 	var jwt = token.JWTToken
 	err := jwt.GenerateToken(user)

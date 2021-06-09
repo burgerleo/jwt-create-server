@@ -2,7 +2,7 @@ package token
 
 import (
 	"fmt"
-	model "jwt-generate-server/models"
+	"jwt-generate-server/models"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -28,13 +28,13 @@ func (j *JwtToken) setExpireTime(expire int) {
 }
 
 // https://learn.vonage.com/blog/2020/03/13/using-jwt-for-authentication-in-a-golang-application-dr/
-func (j *JwtToken) GenerateToken(user model.User) error {
+func (j *JwtToken) GenerateToken(user models.User) error {
 	var err error
 
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["exp"] = time.Now().Add(time.Minute * time.Duration(j.expireTime)).Unix()
-	atClaims["user_id"] = user.UserId
+	atClaims["user"] = user
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(j.secret))
