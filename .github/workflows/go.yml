@@ -24,6 +24,7 @@ jobs:
         run: go build -v ./...
       - name: show git hash
         run: echo ${{ github.sha }}
+        run: echo $GITHUB_SHA
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
