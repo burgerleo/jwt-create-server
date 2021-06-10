@@ -12,10 +12,10 @@ import (
 
 func validateJwt() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		token := token.JWTToken
-		jwt := getTokenString(ctx.GetHeader("Authorization"))
+		jwtToken := token.GetJwtToken()
+		jwtString := getTokenString(ctx.GetHeader("Authorization"))
 
-		if _, err := token.VerifyToken(jwt); err != nil {
+		if _, err := jwtToken.VerifyToken(jwtString); err != nil {
 			ctx.JSON(http.StatusUnauthorized, gin.H{
 				"message": "token expired or token validate fail",
 				"status":  http.StatusUnauthorized,

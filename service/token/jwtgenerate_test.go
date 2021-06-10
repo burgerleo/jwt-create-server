@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	jwtToken = JwtToken{secret: "abcd", expireTime: 10}
+	jtoken = JwtToken{secret: "abcd", expireTime: 10}
 	user     = models.User{UserId: 1, Name: "leo"}
 )
 
@@ -28,19 +28,19 @@ func ExtractToken(r *http.Request) string {
 }
 
 func TestGenerateToken(t *testing.T) {
-	err := jwtToken.GenerateToken(user)
+	err := jtoken.GenerateToken(user)
 	if err != nil {
 		fmt.Println("err")
 	}
 	fmt.Println("----- JWT Token -----")
-	fmt.Println(jwtToken.RetrieveToken())
+	fmt.Println(jtoken.RetrieveToken())
 	assert.NoError(t, err)
 }
 
 func TestVerifyToken(t *testing.T) {
 	TestGenerateToken(t)
 
-	token, err := jwtToken.VerifyToken(jwtToken.RetrieveToken())
+	token, err := jtoken.VerifyToken(jtoken.RetrieveToken())
 	if err != nil {
 		fmt.Println(err)
 	}

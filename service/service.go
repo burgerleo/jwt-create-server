@@ -59,7 +59,6 @@ func GetJsonData(ctx *gin.Context) {
 }
 
 func JwtGenerate(ctx *gin.Context) {
-	fmt.Println(";;;;;;;;;;;;;;")
 	var user models.User
 	// 出現這個錯誤
 	// [GIN-debug] [WARNING] Headers were already written. Wanted to override status code 400 with 200
@@ -69,8 +68,8 @@ func JwtGenerate(ctx *gin.Context) {
 
 	fmt.Println(user)
 
-	var jwt = token.JWTToken
-	err := jwt.GenerateToken(user)
+	var jwtToken = token.GetJwtToken()
+	err := jwtToken.GenerateToken(user)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest,
@@ -86,7 +85,7 @@ func JwtGenerate(ctx *gin.Context) {
 		ApiOutput{
 			Message: "Success",
 			Status:  http.StatusOK,
-			Data:    jwt,
+			Data:    jwtToken,
 		})
 }
 

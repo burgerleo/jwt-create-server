@@ -15,7 +15,10 @@ type JwtToken struct {
 }
 
 func (j *JwtToken) Init(secret string, expire int) {
+	fmt.Println(secret)
+
 	j.setSecret(secret)
+
 	j.setExpireTime(expire)
 }
 

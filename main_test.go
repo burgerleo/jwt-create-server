@@ -46,7 +46,7 @@ func TestGetToken(t *testing.T) {
 }
 
 func TestVerifyToken(t *testing.T) {
-	jwt := token.JWTToken
+	jwt := token.GetJwtToken()
 	jwt.GenerateToken(models.User{UserId: 1, Name: "leo"})
 
 	router := setupRouter()

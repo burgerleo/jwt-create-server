@@ -29,7 +29,6 @@ func Init() error {
 	if err != nil {
 		return fmt.Errorf("Init config err: %v", err)
 	}
-	// confInfo.
 
 	err = token.InitToken(confInfo.JwtConf.JwtSecret, confInfo.JwtConf.JwtExpiredMinute)
 	if err != nil {

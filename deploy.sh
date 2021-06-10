@@ -12,7 +12,6 @@ function set_image {
     local namespace=$1
     local workload=$2
     local hash=$3
-    # echo "kubectl -n ${namespace} set image deploy ${workload} ${workload}=$image_name_version --record"
     kubectl -n ${namespace} set image deploy ${workload} ${workload}=$image_name_version --record
 }
 
