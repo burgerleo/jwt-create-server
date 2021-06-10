@@ -17,32 +17,32 @@ jobs:
         with:
           go-version: 1.16
 
-#       - name: Test
-#         run: go test -v -cover ./...
+      - name: Test
+        run: go test -v -cover ./...
 
-#       - name: Build
-#         run: go build -v ./...
-      - name: show git hash
-#        run: echo ${{ github.sha }}
-        run: echo $GITHUB_SHA
-
-      - name: Set outputs
+      - name: Build
+        run: go build 
+      - name: Set short hash
         id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+        run: |- 
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          echo SHORT_SHA
+
       - name: Check outputs
         run: echo ${{ steps.vars.outputs.sha_short }}
 
-#       - name: Login to DockerHub
-#         uses: docker/login-action@v1
-#         with:
-#           username: ${{ secrets.DOCKERHUB_USERNAME }}
-#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#       - name: Build and push
-#         uses: docker/build-push-action@v2
-#         # env:
-#           # IMAGE_TAG: ${{ github.sha }}
-#         with:
-#           context: .
-#           push: true
-#           tags: ${{ secrets.DOCKERHUB_USERNAME }}/jwt-generate-server:latest
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        # env:
+          # IMAGE_TAG: ${{ github.sha }}
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/jwt-generate-server:${{ steps.vars.outputs.sha_short }}
