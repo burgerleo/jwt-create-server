@@ -30,7 +30,9 @@ jobs:
           echo $SHORT_SHA
 
       - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
+        run: |-
+          echo ${{ steps.vars.outputs.sha_short }}
+          echo $SHORT_SHA
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
